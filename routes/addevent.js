@@ -2,8 +2,6 @@ const express = require("express");
 const StudentCollection = require("../Models/Students");
 const EventCollection = require("../Models/Event");
 const CordinatorCollection = require("../Models/Cordinator");
-const cloudinary = require("../utils/cloudinary");
-const upload = require("../utils/multer");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
@@ -14,16 +12,16 @@ var fs = require("fs");
 var path = require("path");
 require("dotenv/config");
 
-// var multer = require("multer");
+var multer = require("multer");
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "uploads");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null,Date.now()+ file.originalname);
-//   },
-// });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null,Date.now()+ file.originalname);
+  },
+});
 
 const fetchstudent = (req, res, next) => {
   //get student from the jwt token and add to req object
@@ -41,7 +39,7 @@ const fetchstudent = (req, res, next) => {
   }
 };
 
-// var upload = multer({ storage: storage });
+var upload = multer({ storage: storage });
 router.post(
   "/event",
   upload.single("image"),
@@ -55,11 +53,10 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({ sucess: false, error: errors.array() });
       }
-      const result = await cloudinary.uploader.upload(req.file.path);
       const event = await new EventCollection({
         user: req.student.id,
         event_id: event_id,
-        img:result.secure_url,
+        img:req.file.filename,
         user_name: user_name,
         user_email: user_email,
         user_phno,
@@ -71,7 +68,7 @@ router.post(
       res.json({ sucess: true, error: save_event });
       console.log("first")
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       res.status(500).send({ sucess: false, error: "some  error occured" });
     }
   }
