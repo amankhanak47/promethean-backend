@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cors());
 const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {
-  res.send("promethean backened updated with mongoose 6");
+  res.send("promethean backened updated with mongoose 7");
 });
 
 app.use(express.json({limit : '50mb',extended : true}))
@@ -23,6 +23,7 @@ app.use(express.urlencoded({limit : '50mb',extended : true}))
 app.use("/auth", require("./routes/auth.js"));
 app.use("/verify", require("./routes/sendmail.js"));
 app.use("/add", require("./routes/addevent.js"));
+app.use("/create", require("./routes/CreateEvents.js"));
 connectToMongo();
 app.use(express.static('uploads'))
 app.use(bodyParser.urlencoded({ extended: false }));

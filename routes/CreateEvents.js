@@ -1,5 +1,5 @@
 const express = require("express");
-const StudentCollection = require("../Models/Students");
+const AllEventsCollection = require("../Models/CreateEvent");
 const EventCollection = require("../Models/Event");
 const CordinatorCollection = require("../Models/Cordinator");
 const cloudinary = require("./cloudinary");
@@ -10,7 +10,7 @@ var jwt = require("jsonwebtoken");
 const JWT_SECRET = "qwertyuiop";
 require("dotenv/config");
 
-const fetchstudent = (req, res, next) => {
+const fetchcordinator = (req, res, next) => {
   //get student from the jwt token and add to req object
   const token = req.header("auth-token");
   if (!token) {
@@ -18,42 +18,82 @@ const fetchstudent = (req, res, next) => {
   }
   try {
     const data = jwt.verify(token, JWT_SECRET);
-    req.student = data.user;
+    req.cordinator = data.user;
     next();
   } catch (error) {
-    console.log(error);
-    res.status(401).send({ error: "dont know" });
+    res.status(401).send({ error: "some error occures" });
   }
 };
 
+// var upload = multer({ storage: storage });
 router.post(
   "/event",
   upload.single("image"),
-  [body("event_id", "user_name", "user_email", "user_phno", "trans_id")],
-  fetchstudent,
+  [
+    body(
+      "eid",
+      "event_name",
+      "dept_name",
+      "date",
+      "time",
+      "event_desc",
+      "fee",
+      "team",
+      "faculty_cordinate",
+      "faculty_number",
+      "std_cordinator",
+      "std_contact",
+      "upi",
+      "cord_email"
+    ),
+  ],
+  fetchcordinator,
   async (req, res) => {
     try {
-      const { event_id, user_name, user_email, user_phno, trans_id} =
-        req.body;
+      const {
+        eid,
+        event_name,
+        dept_name,
+        date,
+        time,
+        event_desc,
+        fee,
+        team,
+        faculty_cordinate,
+        faculty_number,
+        std_cordinator,
+        std_contact,
+        upi,
+        cord_email,
+      } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ sucess: false, error: errors.array() });
       }
       const result = await cloudinary.uploader.upload(req.file.path);
-      const event = new EventCollection({
-        user: req.student.id,
-        event_id: event_id,
-        img:result.secure_url,
-        user_name: user_name,
-        user_email: user_email,
-        user_phno,
-        trans_id,
+      const createevent = new AllEventsCollection({
+        user: req.cordinator.id,
+        eid,
+        event_name,
+        dept_name,
+        date,
+        time,
+        event_desc,
+        fee,
+        team,
+        faculty_cordinate,
+        faculty_number,
+        std_cordinator,
+        std_contact,
+        upi,
+        cord_email,
+        event_poster: result.secure_url,
       });
-      console.log(event);
-      const save_event = await event.save();
+      const save_event = await createevent.save();
+      console.log(createevent);
 
       res.json({ sucess: true, error: save_event });
-      console.log("first")
+      console.log("hjfjhy");
     } catch (error) {
       console.error(error);
       res.status(500).send({ sucess: false, error: "some  error occured" });
@@ -62,28 +102,22 @@ router.post(
 );
 
 router.post(
-  "/get_student_img",
-  [body("event_id", "user_email")],
+  "/getallevents",
+
   async (req, res) => {
     try {
-      const { event_id, user_email } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ sucess: false, error: errors.array() });
       }
-      let img = await EventCollection.find({
-        user_email: user_email,
-        event_id: event_id,
-      });
-      console.log(img);
-      res.json(img);
+      let allevents = await AllEventsCollection.find({});
+      console.log(allevents);
+      res.json(allevents);
     } catch (error) {
       console.error(error.message);
       res.status(500).send({ sucess: false, error: "some  error occured" });
     }
   }
 );
-
-
 
 module.exports = router;

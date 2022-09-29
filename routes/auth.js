@@ -244,7 +244,7 @@ router.get("/fetchallevents", fetchstudent, async (req, res) => {
 router.post("/fetchalleventswithid", body(
       "event_id"), async (req, res) => {
   try {
-    const event = await EventCollection.find({ event_id: req.body.event_id }).select("-img");
+    const event = await EventCollection.find({ event_id: req.body.event_id });
     res.json(event);
   } catch (error) {
     console.error(error.message);
