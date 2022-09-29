@@ -18,13 +18,27 @@ const Events = new Schema({
   user_phno: {
     type: String,
   },
-   img:
-    {
-        type:String
-    },
+  img: {
+    type: String,
+  },
   trans_id: {
     type: String,
   },
+  event_poster: {
+    type: String,
+  },
+  event_name: {
+    type: String,
+  },
+  event_time: {
+    type: String,
+  },
+  event_date: {
+    type: String,
+  },
+  team: {
+    type:String
+  }
 });
 
 module.exports = mongoose.model("userevents", Events);

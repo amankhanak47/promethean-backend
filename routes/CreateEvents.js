@@ -70,10 +70,16 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({ sucess: false, error: errors.array() });
       }
+      let event = await AllEventsCollection.findOne({ user: req.cordinator.id });
+      if (event) {
+         return res
+          .status(400)
+          .json({ sucess: false, error: "already u have created event" });
+      }
       const result = await cloudinary.uploader.upload(req.file.path);
       const createevent = new AllEventsCollection({
         user: req.cordinator.id,
-        eid,
+        eid:eid+Date.now(),
         event_name,
         dept_name,
         date,
@@ -113,6 +119,25 @@ router.post(
       let allevents = await AllEventsCollection.find({});
       console.log(allevents);
       res.json(allevents);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send({ sucess: false, error: "some  error occured" });
+    }
+  }
+);
+
+router.post(
+  "/geteventwithorg",
+fetchcordinator,
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ sucess: false, error: errors.array() });
+      }
+      let orgevents = await AllEventsCollection.find({user:req.cordinator.id});
+      console.log(orgevents);
+      res.json(orgevents);
     } catch (error) {
       console.error(error.message);
       res.status(500).send({ sucess: false, error: "some  error occured" });

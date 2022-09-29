@@ -29,31 +29,63 @@ const fetchstudent = (req, res, next) => {
 router.post(
   "/event",
   upload.single("image"),
-  [body("event_id", "user_name", "user_email", "user_phno", "trans_id")],
+  [
+    body(
+      "event_id",
+      "user_name",
+      "user_email",
+      "user_phno",
+      "event_name",
+      "event_time",
+      "event_date",
+      "event_poster",
+      "team"
+    ),
+  ],
   fetchstudent,
   async (req, res) => {
     try {
-      const { event_id, user_name, user_email, user_phno, trans_id} =
-        req.body;
+      const {
+        event_id,
+        user_name,
+        user_email,
+        user_phno,
+        event_name,
+        event_time,
+        event_date,
+        event_poster,team
+      } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ sucess: false, error: errors.array() });
       }
+      // let regevent = await EventCollection.find({ $and: [{ email: user_email, event_id: event_id }] })
+      // if (regevent!="") {
+      //   console.log(regevent)
+      //    return res.status(400).json({
+      //     sucess: false,
+      //     error: "sorry You have already registered with this email",
+      //   });
+      // }
       const result = await cloudinary.uploader.upload(req.file.path);
       const event = new EventCollection({
         user: req.student.id,
         event_id: event_id,
-        img:result.secure_url,
+        img: result.secure_url,
         user_name: user_name,
         user_email: user_email,
         user_phno,
-        trans_id,
+        event_name,
+        event_time,
+        event_date,
+        event_poster,
+        team
       });
       console.log(event);
       const save_event = await event.save();
 
       res.json({ sucess: true, error: save_event });
-      console.log("first")
+      console.log("first");
     } catch (error) {
       console.error(error);
       res.status(500).send({ sucess: false, error: "some  error occured" });
@@ -75,7 +107,7 @@ router.post(
         user_email: user_email,
         event_id: event_id,
       });
-      console.log(img);
+      console.log(img,"sdf");
       res.json(img);
     } catch (error) {
       console.error(error.message);
@@ -83,7 +115,5 @@ router.post(
     }
   }
 );
-
-
 
 module.exports = router;

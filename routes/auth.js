@@ -233,7 +233,7 @@ console.log(event)
 
 router.get("/fetchallevents", fetchstudent, async (req, res) => {
   try {
-    const event = await EventCollection.find({ user: req.student.id }).select("-img");
+    const event = await EventCollection.find({ user: req.student.id })
     res.json(event);
   } catch (error) {
     console.error(error.message);

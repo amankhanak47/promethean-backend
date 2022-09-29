@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const mongouri =
   "mongodb+srv://bvrit-portal:AQPZMWO4tQAvMe9L@cluster0.dmnsn.mongodb.net/promethean?retryWrites=true&w=majority";
+  // "mongodb://localhost:27017"
 
 const connectToMongo = () => {
   mongoose.connect(mongouri, () => {
