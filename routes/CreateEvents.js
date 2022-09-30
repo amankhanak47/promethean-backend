@@ -145,4 +145,115 @@ fetchcordinator,
   }
 );
 
+router.put(
+  "/updateevent",
+  upload.single("image"),
+  [
+    body(
+      "eid",
+      "event_name",
+      "dept_name",
+      "date",
+      "time",
+      "event_desc",
+      "fee",
+      "team",
+      "faculty_cordinate",
+      "faculty_number",
+      "std_cordinator",
+      "std_contact",
+      "upi",
+      "cord_email"
+    ),
+  ],
+  fetchcordinator,
+  async (req, res) => {
+    try {
+      const {
+        eid,
+        event_name,
+        dept_name,
+        date,
+        time,
+        event_desc,
+        fee,
+        team,
+        faculty_cordinate,
+        faculty_number,
+        std_cordinator,
+        std_contact,
+        upi,
+        cord_email,
+      } = req.body;
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ sucess: false, error: errors.array() });
+      }
+      const result = await cloudinary.uploader.upload(req.file.path);
+
+      const updateevent = {};
+      if (event_name) {
+        updateevent.event_name=event_name
+      }
+
+      if (dept_name) {
+        updateevent.dept_name=dept_name
+      }
+
+      if (date) {
+        updateevent.date=date
+      }
+
+      if (time) {
+        updateevent.time=time
+      }
+
+       if (std_cordinator) {
+        updateevent.std_cordinator=std_cordinator
+      }
+
+      if (event_desc) {
+        updateevent.event_desc=event_desc
+      }
+
+      if (fee) {
+        updateevent.fee=fee
+      }
+
+      if (team) {
+        updateevent.team=team
+      }
+
+      if (faculty_cordinate) {
+        updateevent.faculty_cordinate=faculty_cordinate
+      }
+
+      if (faculty_number) {
+        updateevent.faculty_number=faculty_number
+      }
+
+      if (std_contact) {
+        updateevent.std_contacte=std_contact
+      }
+
+      if (upi) {
+        updateevent.upi=upi
+      }
+      updateevent.event_poster=result.secure_url
+
+
+
+
+      let event = await AllEventsCollection.findByIdAndUpdate(req.body.id,{$set:updateevent});
+      
+console.log(event)
+      res.json({ sucess: true, error: event });
+      console.log("event")
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ sucess: false, error: "some  error occured" });
+    }
+  }
+);
+
 module.exports = router;
