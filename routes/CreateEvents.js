@@ -233,7 +233,7 @@ router.put(
       }
 
       if (std_contact) {
-        updateevent.std_contacte=std_contact
+        updateevent.std_contact=std_contact
       }
 
       if (upi) {

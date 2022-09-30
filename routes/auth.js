@@ -1,6 +1,7 @@
 const express = require("express");
 const StudentCollection = require("../Models/Students");
 const EventCollection = require("../Models/Event");
+const Emails = require("../Models/Orgemails");
 const CordinatorCollection = require("../Models/Cordinator");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
@@ -8,6 +9,41 @@ const bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 const JWT_SECRET = "qwertyuiop";
 var nodemailer = require("nodemailer");
+
+
+router.post(
+  "/orgmail",
+  [
+    body("email")
+  ],
+  async (req, res) => {
+    try {
+    
+      const email = await Emails.create({
+        email: req.body.email,
+      });
+      res.json(email);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("some error occured");
+    }
+  }
+);
+
+router.post(
+  "/getorgmail",
+  async (req, res) => {
+    try {
+    
+      const emails=await Emails.find()
+      res.json(emails);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("some error occured");
+    }
+  }
+);
+
 
 // Student Signup
 router.post(
@@ -275,10 +311,17 @@ router.post(
 
     //check email already exist or not
     try {
+      let checkauth = await Emails.findOne({ email: req.body.email })
+      if (!checkauth) {
+        return res.status(400).json({
+          sucess: false,
+          error: "You Are Not Event Organizer 😂😂",
+        });
+      }
       let cordinator = await CordinatorCollection.findOne({ email: req.body.email });
       if (cordinator) {
         return res.status(400).json({
-          sucess: sucess,
+          sucess: false,
           error: "sorry a user with this email already exist",
         });
       }
