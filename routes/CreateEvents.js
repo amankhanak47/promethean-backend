@@ -3,13 +3,19 @@ const AllEventsCollection = require("../Models/CreateEvent");
 const EventCollection = require("../Models/Event");
 const CordinatorCollection = require("../Models/Cordinator");
 const cloudinary = require("./cloudinary");
-const csemech = require("./csemech");
-const aimlmba = require("./aimlmba");
-const itcsbs = require("./itcsbs");
-const eeepharma = require("./eeepharma");
-const ecechem = require("./ecechem");
-const civilbm = require("./civilbm");
-const central = require("./central");
+const cse=require("./clouds/cse")
+const ece=require("./clouds/ece")
+const aiml=require("./clouds/aiml")
+const bm=require("./clouds/bm")
+const central=require("./clouds/central")
+const chem=require("./clouds/chem")
+const civil=require("./clouds/civil")
+const ds=require("./clouds/ds")
+const eee=require("./clouds/eee")
+const itbs=require("./clouds/itcsbs")
+const mba=require("./clouds/mba")
+const mech=require("./clouds/mech")
+const pharma=require("./clouds/pharma")
 const upload = require("./multer");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
@@ -86,41 +92,58 @@ router.post(
           .json({ sucess: false, error: "already u have created event" });
       }
       let result;
-      if (dept_name == "cse" || dept_name == "mech") {
-        result = await csemech.uploader.upload(req.file.path);
-        console.log("02")
-        // 02
+      if (dept_name == "cse") {
+        result = await cse.uploader.upload(req.file.path);
+        console.log("cse")
       }
-      else if (dept_name == "aiml" || dept_name == "mba"||dept_name=="ds") {
-        result = await aimlmba.uploader.upload(req.file.path);
-        console.log("759")
-        // 759
+      else  if (dept_name == "aiml") {
+        result = await aiml.uploader.upload(req.file.path);
+        console.log("aiml")
       }
-      else if (dept_name == "it" || dept_name == "csbs") {
-        result = await itcsbs.uploader.upload(req.file.path);
-        console.log("18")
-        //18
+      else if (dept_name == "ds") {
+        result = await ds.uploader.upload(req.file.path);
+        console.log("ds")
       }
-         else if (dept_name == "ece" || dept_name == "chem") {
-        result = await ecechem.uploader.upload(req.file.path);
-        console.log("j1")
-        //j1
+      else if (dept_name == "ece") {
+        result = await ece.uploader.upload(req.file.path);
+        console.log("ece")
       }
-         else if (dept_name == "eee" || dept_name == "pharma") {
-        result = await eeepharma.uploader.upload(req.file.path);
-        console.log("avi",result)
-        //avi
+      else if (dept_name == "itbs") {
+        result = await itbs.uploader.upload(req.file.path);
+        console.log("itbs")
       }
-         else if (dept_name == "civil" || dept_name == "bm") {
-        result = await civilbm.uploader.upload(req.file.path);
-        console.log("bil")
-        //bil
+      else if (dept_name == "eee") {
+        result = await eee.uploader.upload(req.file.path);
+        console.log("eee")
+      }
+      else if (dept_name == "mech") {
+        result = await mech.uploader.upload(req.file.path);
+        console.log("mech")
+      }
+      else if (dept_name == "civil") {
+        result = await civil.uploader.upload(req.file.path);
+        console.log("civil")
+      }
+      else if (dept_name == "chem") {
+        result = await chem.uploader.upload(req.file.path);
+        console.log("chem")
+      }
+      else if (dept_name == "bm") {
+        result = await bm.uploader.upload(req.file.path);
+        console.log("bm")
+      }
+      else if (dept_name == "pharma") {
+        result = await pharma.uploader.upload(req.file.path);
+        console.log("pharma")
+      }
+      else if (dept_name == "mba") {
+        result = await mba.uploader.upload(req.file.path);
+        console.log("mba")
       }
       else if (dept_name == "central") {
-         result = await central.uploader.upload(req.file.path);
-        console.log("bil2")
-        //bil2
-        }
+        result = await central.uploader.upload(req.file.path);
+        console.log("central")
+      }
       else {
         result = await cloudinary.uploader.upload(req.file.path);
         console.log("j2")
@@ -285,36 +308,58 @@ router.put(
         updateevent.upi = upi;
       }
        let result;
-      if (dept_name == "cse" || dept_name == "mech") {
-        result = await csemech.uploader.upload(req.file.path);
-        console.log("02")
-        // 02
+      if (dept_name == "cse") {
+        result = await cse.uploader.upload(req.file.path);
+        console.log("cse")
       }
-      else if (dept_name == "aiml" || dept_name == "mba"||dept_name=="ds") {
-        result = await aimlmba.uploader.upload(req.file.path);
-        console.log("759")
-        // 759
+      else  if (dept_name == "aiml") {
+        result = await aiml.uploader.upload(req.file.path);
+        console.log("aiml")
       }
-      else if (dept_name == "it" || dept_name == "csbs") {
-        result = await itcsbs.uploader.upload(req.file.path);
-        console.log("18")
-        //18
+      else if (dept_name == "ds") {
+        result = await ds.uploader.upload(req.file.path);
+        console.log("ds")
       }
-         else if (dept_name == "ece" || dept_name == "chem") {
-        result = await ecechem.uploader.upload(req.file.path);
-        console.log("j1")
-        //j1
+      else if (dept_name == "ece") {
+        result = await ece.uploader.upload(req.file.path);
+        console.log("ece")
       }
-         else if (dept_name == "eee" || dept_name == "pharma") {
-        result = await eeepharma.uploader.upload(req.file.path);
-        console.log("avi")
-        //avi
+      else if (dept_name == "itbs") {
+        result = await itbs.uploader.upload(req.file.path);
+        console.log("itbs")
       }
-         else if (dept_name == "civil" || dept_name == "bm") {
-        result = await civilbm.uploader.upload(req.file.path);
-        console.log("bil")
-        //bil
-        }
+      else if (dept_name == "eee") {
+        result = await eee.uploader.upload(req.file.path);
+        console.log("eee")
+      }
+      else if (dept_name == "mech") {
+        result = await mech.uploader.upload(req.file.path);
+        console.log("mech")
+      }
+      else if (dept_name == "civil") {
+        result = await civil.uploader.upload(req.file.path);
+        console.log("civil")
+      }
+      else if (dept_name == "chem") {
+        result = await chem.uploader.upload(req.file.path);
+        console.log("chem")
+      }
+      else if (dept_name == "bm") {
+        result = await bm.uploader.upload(req.file.path);
+        console.log("bm")
+      }
+      else if (dept_name == "pharma") {
+        result = await pharma.uploader.upload(req.file.path);
+        console.log("pharma")
+      }
+      else if (dept_name == "mba") {
+        result = await mba.uploader.upload(req.file.path);
+        console.log("mba")
+      }
+      else if (dept_name == "central") {
+        result = await central.uploader.upload(req.file.path);
+        console.log("central")
+      }
       else {
         result = await cloudinary.uploader.upload(req.file.path);
         console.log("j2")

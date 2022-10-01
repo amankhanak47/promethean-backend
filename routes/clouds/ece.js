@@ -1,11 +1,11 @@
-const ecechem = require("cloudinary");
+const ece = require("cloudinary");
 
-ecechem.config({
+ece.config({
   cloud_name: "dcxlb1tcn",
   api_key: 862119675476718,
   api_secret: "dkGK2-_FjxekYgOoC8IO6-ZN-zA",
 });
 
 
-// j1
-module.exports = ecechem;
+// j1 waseem
+module.exports = ece;
