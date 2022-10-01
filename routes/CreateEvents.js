@@ -3,6 +3,13 @@ const AllEventsCollection = require("../Models/CreateEvent");
 const EventCollection = require("../Models/Event");
 const CordinatorCollection = require("../Models/Cordinator");
 const cloudinary = require("./cloudinary");
+const csemech = require("./csemech");
+const aimlmba = require("./aimlmba");
+const itcsbs = require("./itcsbs");
+const eeepharma = require("./eeepharma");
+const ecechem = require("./ecechem");
+const civilbm = require("./civilbm");
+const central = require("./central");
 const upload = require("./multer");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
@@ -70,16 +77,58 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({ sucess: false, error: errors.array() });
       }
-      let event = await AllEventsCollection.findOne({ user: req.cordinator.id });
+      let event = await AllEventsCollection.findOne({
+        user: req.cordinator.id,
+      });
       if (event) {
-         return res
+        return res
           .status(400)
           .json({ sucess: false, error: "already u have created event" });
       }
-      const result = await cloudinary.uploader.upload(req.file.path);
+      let result;
+      if (dept_name == "cse" || dept_name == "mech") {
+        result = await csemech.uploader.upload(req.file.path);
+        console.log("02")
+        // 02
+      }
+      else if (dept_name == "aiml" || dept_name == "mba"||dept_name=="ds") {
+        result = await aimlmba.uploader.upload(req.file.path);
+        console.log("759")
+        // 759
+      }
+      else if (dept_name == "it" || dept_name == "csbs") {
+        result = await itcsbs.uploader.upload(req.file.path);
+        console.log("18")
+        //18
+      }
+         else if (dept_name == "ece" || dept_name == "chem") {
+        result = await ecechem.uploader.upload(req.file.path);
+        console.log("j1")
+        //j1
+      }
+         else if (dept_name == "eee" || dept_name == "pharma") {
+        result = await eeepharma.uploader.upload(req.file.path);
+        console.log("avi",result)
+        //avi
+      }
+         else if (dept_name == "civil" || dept_name == "bm") {
+        result = await civilbm.uploader.upload(req.file.path);
+        console.log("bil")
+        //bil
+      }
+      else if (dept_name == "central") {
+         result = await central.uploader.upload(req.file.path);
+        console.log("bil2")
+        //bil2
+        }
+      else {
+        result = await cloudinary.uploader.upload(req.file.path);
+        console.log("j2")
+        //j2
+      }
       const createevent = new AllEventsCollection({
         user: req.cordinator.id,
-        eid:eid+Date.now(),
+        eid: eid + Date.now(),
         event_name,
         dept_name,
         date,
@@ -96,7 +145,7 @@ router.post(
         event_poster: result.secure_url,
       });
       const save_event = await createevent.save();
-      console.log(createevent);
+      // console.log(createevent);
 
       res.json({ sucess: true, error: save_event });
       console.log("hjfjhy");
@@ -126,24 +175,20 @@ router.post(
   }
 );
 
-router.post(
-  "/geteventwithorg",
-fetchcordinator,
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ sucess: false, error: errors.array() });
-      }
-      let orgevents = await AllEventsCollection.find({user:req.cordinator.id});
-      console.log(orgevents);
-      res.json(orgevents);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send({ sucess: false, error: "some  error occured" });
+router.post("/geteventwithorg", fetchcordinator, async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ sucess: false, error: errors.array() });
     }
+    let orgevents = await AllEventsCollection.find({ user: req.cordinator.id });
+    // console.log(orgevents);
+    res.json(orgevents);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send({ sucess: false, error: "some  error occured" });
   }
-);
+});
 
 router.put(
   "/updateevent",
@@ -189,66 +234,101 @@ router.put(
       if (!errors.isEmpty()) {
         return res.status(400).json({ sucess: false, error: errors.array() });
       }
-      const result = await cloudinary.uploader.upload(req.file.path);
+      
 
       const updateevent = {};
       if (event_name) {
-        updateevent.event_name=event_name
+        updateevent.event_name = event_name;
       }
 
       if (dept_name) {
-        updateevent.dept_name=dept_name
+        updateevent.dept_name = dept_name;
       }
 
       if (date) {
-        updateevent.date=date
+        updateevent.date = date;
       }
 
       if (time) {
-        updateevent.time=time
+        updateevent.time = time;
       }
 
-       if (std_cordinator) {
-        updateevent.std_cordinator=std_cordinator
+      if (std_cordinator) {
+        updateevent.std_cordinator = std_cordinator;
       }
 
       if (event_desc) {
-        updateevent.event_desc=event_desc
+        updateevent.event_desc = event_desc;
       }
 
       if (fee) {
-        updateevent.fee=fee
+        updateevent.fee = fee;
       }
 
       if (team) {
-        updateevent.team=team
+        updateevent.team = team;
       }
 
       if (faculty_cordinate) {
-        updateevent.faculty_cordinate=faculty_cordinate
+        updateevent.faculty_cordinate = faculty_cordinate;
       }
 
       if (faculty_number) {
-        updateevent.faculty_number=faculty_number
+        updateevent.faculty_number = faculty_number;
       }
 
       if (std_contact) {
-        updateevent.std_contact=std_contact
+        updateevent.std_contact = std_contact;
       }
 
       if (upi) {
-        updateevent.upi=upi
+        updateevent.upi = upi;
       }
-      updateevent.event_poster=result.secure_url
+       let result;
+      if (dept_name == "cse" || dept_name == "mech") {
+        result = await csemech.uploader.upload(req.file.path);
+        console.log("02")
+        // 02
+      }
+      else if (dept_name == "aiml" || dept_name == "mba"||dept_name=="ds") {
+        result = await aimlmba.uploader.upload(req.file.path);
+        console.log("759")
+        // 759
+      }
+      else if (dept_name == "it" || dept_name == "csbs") {
+        result = await itcsbs.uploader.upload(req.file.path);
+        console.log("18")
+        //18
+      }
+         else if (dept_name == "ece" || dept_name == "chem") {
+        result = await ecechem.uploader.upload(req.file.path);
+        console.log("j1")
+        //j1
+      }
+         else if (dept_name == "eee" || dept_name == "pharma") {
+        result = await eeepharma.uploader.upload(req.file.path);
+        console.log("avi")
+        //avi
+      }
+         else if (dept_name == "civil" || dept_name == "bm") {
+        result = await civilbm.uploader.upload(req.file.path);
+        console.log("bil")
+        //bil
+        }
+      else {
+        result = await cloudinary.uploader.upload(req.file.path);
+        console.log("j2")
+        //j2
+      }
+      updateevent.event_poster = result.secure_url;
 
+      let event = await AllEventsCollection.findByIdAndUpdate(req.body.id, {
+        $set: updateevent,
+      });
 
-
-
-      let event = await AllEventsCollection.findByIdAndUpdate(req.body.id,{$set:updateevent});
-      
-console.log(event)
+      // console.log(event);
       res.json({ sucess: true, error: event });
-      console.log("event")
+      console.log("event");
     } catch (error) {
       console.error(error);
       res.status(500).send({ sucess: false, error: "some  error occured" });
